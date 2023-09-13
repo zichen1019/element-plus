@@ -24,7 +24,6 @@
         />
       </template>
     </el-table-column>
-    <el-table-column prop="property" min-width="120px" label="prop" />
     <el-table-column prop="label" min-width="120px" label="名称" />
     <el-table-column prop="width" label="宽度(px)" width="100px">
       <template #default="{ row }">
@@ -90,13 +89,9 @@ export default defineComponent({
   },
   setup() {
     const table = inject(TABLE_INJECTION_KEY)
-    const columns = table.store.states.originColumns
-    console.log(table.store.states)
-    console.log('columns', columns)
+    const columns = table.store.states.initColumns
     const changeTableColumnAttr = () => {
-      console.log('changeFixed')
       table.store.scheduleLayout(true)
-      // table.state.doLayout()
     }
     return {
       columns,

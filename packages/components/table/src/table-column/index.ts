@@ -163,7 +163,6 @@ export default defineComponent({
     return
   },
   render() {
-    console.log('render')
     try {
       const renderDefault = this.$slots.default?.({
         row: {},
@@ -174,9 +173,8 @@ export default defineComponent({
       if (Array.isArray(renderDefault)) {
         for (const childNode of renderDefault) {
           if (
-            (childNode.type?.name === 'ElTableColumn' ||
-              childNode.shapeFlag & 2) &&
-            !childNode.hidden
+            childNode.type?.name === 'ElTableColumn' ||
+            childNode.shapeFlag & 2
           ) {
             children.push(childNode)
           } else if (

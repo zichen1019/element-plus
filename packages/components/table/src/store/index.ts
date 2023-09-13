@@ -76,11 +76,6 @@ function useStore<T>() {
       parent: TableColumnCtx<T>,
       updateColumnOrder: () => void
     ) {
-      // 隐藏列
-      if (column.hidden) {
-        console.log(`insertColumn 隐藏`, column)
-        return
-      }
       const array = unref(states._columns)
       let newColumns = []
       if (!parent) {

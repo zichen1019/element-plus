@@ -53,6 +53,7 @@ function useWatcher<T>() {
   const _data: Ref<T[]> = ref([])
   const isComplex = ref(false)
   const _columns: Ref<TableColumnCtx<T>[]> = ref([])
+  const initColumns: Ref<TableColumnCtx<T>[]> = ref([])
   const originColumns: Ref<TableColumnCtx<T>[]> = ref([])
   const columns: Ref<TableColumnCtx<T>[]> = ref([])
   const fixedColumns: Ref<TableColumnCtx<T>[]> = ref([])
@@ -60,7 +61,6 @@ function useWatcher<T>() {
   const leafColumns: Ref<TableColumnCtx<T>[]> = ref([])
   const fixedLeafColumns: Ref<TableColumnCtx<T>[]> = ref([])
   const rightFixedLeafColumns: Ref<TableColumnCtx<T>[]> = ref([])
-  const hiddenColumns: Ref<TableColumnCtx<T>[]> = ref([])
   const updateOrderFns: (() => void)[] = []
   const leafColumnsLength = ref(0)
   const fixedLeafColumnsLength = ref(0)
@@ -105,12 +105,10 @@ function useWatcher<T>() {
   }
 
   // 更新列
-  // 将左右固定及非固定列中 hidden 的列排除掉 就可以将其从列表中删除
   const updateColumns = () => {
     _columns.value.forEach((column) => {
       updateChildFixed(column)
     })
-    hiddenColumns.value = columns.value.filter((column) => column.hidden)
     fixedColumns.value = _columns.value.filter(
       (column) =>
         (column.fixed === true || column.fixed === 'left') && !column.hidden
@@ -135,7 +133,25 @@ function useWatcher<T>() {
       .concat(fixedColumns.value)
       .concat(notFixedColumns)
       .concat(rightFixedColumns.value)
-      .concat(hiddenColumns)
+
+    // 存储一份表格最初进来时的所有列，及其列的顺序
+    if (initColumns.value.length === 0) {
+      initColumns.value = originColumns.value
+    } else {
+      initColumns.value = initColumns.value.map((initColumn) => {
+        const originColumn = originColumns.value.find(
+          (originColumn) => originColumn.property === initColumn.property
+        )
+        if (!originColumn) {
+          initColumn.hidden = true
+          return initColumn
+        }
+
+        initColumn = originColumn
+        return initColumn
+      })
+    }
+
     const leafColumns = doFlattenColumns(notFixedColumns)
     const fixedLeafColumns = doFlattenColumns(fixedColumns.value)
     const rightFixedLeafColumns = doFlattenColumns(rightFixedColumns.value)
@@ -528,6 +544,7 @@ function useWatcher<T>() {
       _data,
       isComplex,
       _columns,
+      initColumns,
       originColumns,
       columns,
       fixedColumns,
