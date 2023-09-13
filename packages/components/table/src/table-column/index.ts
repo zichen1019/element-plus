@@ -91,6 +91,7 @@ export default defineComponent({
         index: props.index,
         // <el-table-column key="xxx" />
         rawColumnKey: instance.vnode.key,
+        hidden: props.hidden || props.hidden === '',
       }
 
       const basicProps = [
@@ -162,6 +163,7 @@ export default defineComponent({
     return
   },
   render() {
+    console.log('render')
     try {
       const renderDefault = this.$slots.default?.({
         row: {},
@@ -172,8 +174,9 @@ export default defineComponent({
       if (Array.isArray(renderDefault)) {
         for (const childNode of renderDefault) {
           if (
-            childNode.type?.name === 'ElTableColumn' ||
-            childNode.shapeFlag & 2
+            (childNode.type?.name === 'ElTableColumn' ||
+              childNode.shapeFlag & 2) &&
+            !childNode.hidden
           ) {
             children.push(childNode)
           } else if (
@@ -189,8 +192,7 @@ export default defineComponent({
           }
         }
       }
-      const vnode = h('div', children)
-      return vnode
+      return h('div', children)
     } catch {
       return h('div', [])
     }

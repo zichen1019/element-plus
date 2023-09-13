@@ -33,7 +33,7 @@
       v-if="$slots.default"
       :class="{ [ns.em('text', 'expand')]: shouldAddSpace }"
     >
-      <slot />
+      <slot />{{ autoDisabledSeconds ? ' ' + autoDisabledSeconds : '' }}
     </span>
   </component>
 </template>
@@ -54,8 +54,16 @@ const emit = defineEmits(buttonEmits)
 
 const buttonStyle = useButtonCustomStyle(props)
 const ns = useNamespace('button')
-const { _ref, _size, _type, _disabled, _props, shouldAddSpace, handleClick } =
-  useButton(props, emit)
+const {
+  _ref,
+  _size,
+  _type,
+  _disabled,
+  _props,
+  autoDisabledSeconds,
+  shouldAddSpace,
+  handleClick,
+} = useButton(props, emit)
 
 defineExpose({
   /** @description button html element */

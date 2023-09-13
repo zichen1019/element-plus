@@ -19,7 +19,7 @@
   "jsdelivr": "index.css",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/element-plus/element-plus.git"
+    "url": "git+https://github.com/zichen1019/element-plus.git"
   },
   "style": "index.css",
   "scripts": {

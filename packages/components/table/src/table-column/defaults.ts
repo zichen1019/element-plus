@@ -64,6 +64,7 @@ interface TableColumnCtx<T> {
   getColumnIndex: () => number
   no: number
   filterOpened?: boolean
+  hidden: boolean | string
 }
 
 interface TableColumn<T> extends ComponentInternalInstance {
@@ -111,7 +112,10 @@ export default {
     default: true,
   },
   columnKey: String,
-  align: String,
+  align: {
+    type: String,
+    default: 'center',
+  },
   headerAlign: String,
   showOverflowTooltip: {
     type: [Boolean, Object] as PropType<
@@ -145,4 +149,5 @@ export default {
       )
     },
   },
+  hidden: [Boolean, String],
 }

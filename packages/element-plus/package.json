@@ -60,7 +60,7 @@
   "jsdelivr": "dist/index.full.js",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/element-plus/element-plus.git"
+    "url": "git+https://github.com/zichen1019/element-plus.git"
   },
   "publishConfig": {
     "access": "public"

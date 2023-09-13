@@ -30,7 +30,10 @@ export const useButton = (
   const globalConfig = useGlobalConfig('button')
   const { form } = useFormItem()
   const _size = useFormSize(computed(() => buttonGroupContext?.size))
-  const _disabled = useFormDisabled()
+  const autoDisabledSeconds = ref<number>(0)
+  const _disabled = computed(
+    () => useFormDisabled().value || autoDisabledSeconds.value > 0
+  )
   const _ref = ref<HTMLButtonElement>()
   const slots = useSlots()
 
@@ -68,7 +71,15 @@ export const useButton = (
     if (props.nativeType === 'reset') {
       form?.resetFields()
     }
+    autoDisabledSeconds.value = 3
     emit('click', evt)
+    const intervalId = setInterval(() => {
+      autoDisabledSeconds.value -= 1
+      if (autoDisabledSeconds.value <= 0) {
+        autoDisabledSeconds.value = 0
+        clearInterval(intervalId)
+      }
+    }, 1000)
   }
 
   return {
@@ -77,6 +88,7 @@ export const useButton = (
     _type,
     _ref,
     _props,
+    autoDisabledSeconds,
     shouldAddSpace,
     handleClick,
   }

@@ -60,6 +60,7 @@ function useWatcher<T>() {
   const leafColumns: Ref<TableColumnCtx<T>[]> = ref([])
   const fixedLeafColumns: Ref<TableColumnCtx<T>[]> = ref([])
   const rightFixedLeafColumns: Ref<TableColumnCtx<T>[]> = ref([])
+  const hiddenColumns: Ref<TableColumnCtx<T>[]> = ref([])
   const updateOrderFns: (() => void)[] = []
   const leafColumnsLength = ref(0)
   const fixedLeafColumnsLength = ref(0)
@@ -79,6 +80,16 @@ function useWatcher<T>() {
   watch(data, () => instance.state && scheduleLayout(false), {
     deep: true,
   })
+  // watch(
+  //   columns,
+  //   () => {
+  //     instance.state && scheduleLayout(true)
+  //     console.log('watch columns')
+  //   },
+  //   {
+  //     deep: true,
+  //   }
+  // )
 
   // 检查 rowKey 是否存在
   const assertRowKey = () => {
@@ -94,15 +105,18 @@ function useWatcher<T>() {
   }
 
   // 更新列
+  // 将左右固定及非固定列中 hidden 的列排除掉 就可以将其从列表中删除
   const updateColumns = () => {
     _columns.value.forEach((column) => {
       updateChildFixed(column)
     })
+    hiddenColumns.value = columns.value.filter((column) => column.hidden)
     fixedColumns.value = _columns.value.filter(
-      (column) => column.fixed === true || column.fixed === 'left'
+      (column) =>
+        (column.fixed === true || column.fixed === 'left') && !column.hidden
     )
     rightFixedColumns.value = _columns.value.filter(
-      (column) => column.fixed === 'right'
+      (column) => column.fixed === 'right' && !column.hidden
     )
     if (
       fixedColumns.value.length > 0 &&
@@ -114,11 +128,14 @@ function useWatcher<T>() {
       fixedColumns.value.unshift(_columns.value[0])
     }
 
-    const notFixedColumns = _columns.value.filter((column) => !column.fixed)
+    const notFixedColumns = _columns.value.filter(
+      (column) => !column.fixed && !column.hidden
+    )
     originColumns.value = []
       .concat(fixedColumns.value)
       .concat(notFixedColumns)
       .concat(rightFixedColumns.value)
+      .concat(hiddenColumns)
     const leafColumns = doFlattenColumns(notFixedColumns)
     const fixedLeafColumns = doFlattenColumns(fixedColumns.value)
     const rightFixedLeafColumns = doFlattenColumns(rightFixedColumns.value)

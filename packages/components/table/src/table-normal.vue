@@ -26,7 +26,6 @@
     :data-prefix="ns.namespace.value"
     @mouseleave="handleMouseLeave"
   >
-    <table-operation />
     <div :class="ns.e('inner-wrapper')" :style="tableInnerStyle">
       <div ref="hiddenColumns" class="hidden-columns">
         <slot />
@@ -164,17 +163,15 @@ import { TABLE_INJECTION_KEY } from './tokens'
 import { hColgroup } from './h-helper'
 import { useScrollbar } from './composables/use-scrollbar'
 
-import TableOperation from './table-operation/index.vue'
 import type { Table } from './table/defaults'
 
 let tableIdSeed = 1
 export default defineComponent({
-  name: 'ElTable',
+  name: 'ElTableNormal',
   directives: {
     Mousewheel,
   },
   components: {
-    TableOperation,
     TableHeader,
     TableBody,
     TableFooter,

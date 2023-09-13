@@ -1,8 +1,13 @@
 import { withInstall, withNoopInstall } from '@element-plus/utils'
 import Table from './src/table.vue'
 import TableColumn from './src/tableColumn'
+import TableNormal from './src/table-normal.vue'
 
 export const ElTable = withInstall(Table, {
+  TableColumn,
+})
+
+export const ElTableNormal = withInstall(TableNormal, {
   TableColumn,
 })
 export default ElTable
@@ -10,6 +15,7 @@ export const ElTableColumn = withNoopInstall(TableColumn)
 
 export type TableInstance = InstanceType<typeof Table>
 
+// @ts-ignore
 export type TableColumnInstance = InstanceType<typeof TableColumn>
 
 export type {
