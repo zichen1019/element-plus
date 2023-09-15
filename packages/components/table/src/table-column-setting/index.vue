@@ -1,9 +1,9 @@
 <template>
   <el-table-normal
-    ref="tableNormalColumns"
+    ref="tableColumns"
     :data="columns"
-    row-key="prop"
-    max-height="500px"
+    row-key="id"
+    max-height="500"
     size="small"
     border
     fit
@@ -24,14 +24,14 @@
         />
       </template>
     </el-table-column>
-    <el-table-column prop="label" min-width="120px" label="名称" />
-    <el-table-column prop="width" label="宽度(px)" width="100px">
+    <el-table-column prop="label" label="名称" min-width="120px" />
+    <el-table-column prop="width" label="宽度(px)" width="140px">
       <template #default="{ row }">
-        <el-input
+        <el-input-number
           v-model="row.width"
           placeholder="auto"
           size="small"
-          @change="changeTableColumnAttr"
+          @change="changeTableColumnAttr(row)"
         />
       </template>
     </el-table-column>
@@ -58,9 +58,10 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, inject } from 'vue'
+import { defineComponent, inject, nextTick, ref } from 'vue'
+import { Sortable } from 'sortablejs'
 import { DCaret as ElIconDCaret } from '@element-plus/icons-vue'
-import ElInput from '../../../input'
+import ElInputNumber from '../../../input-number'
 import ElSwitch from '../../../switch'
 import { ElRadioButton, ElRadioGroup } from '../../../radio'
 import ElTag from '../../../tag'
@@ -70,7 +71,7 @@ import { TABLE_INJECTION_KEY } from '../tokens'
 import '@element-plus/components/base/style'
 import '@element-plus/theme-chalk/src/table.scss'
 import '@element-plus/components/switch/style'
-import '@element-plus/components/input/style'
+import '@element-plus/components/input-number/style'
 import '@element-plus/components/radio/style'
 import '@element-plus/components/radio-button/style'
 import '@element-plus/components/radio-group/style'
@@ -80,7 +81,7 @@ export default defineComponent({
   components: {
     ElTableNormal,
     ElTableColumn,
-    ElInput,
+    ElInputNumber,
     ElSwitch,
     ElRadioGroup,
     ElRadioButton,
@@ -89,31 +90,38 @@ export default defineComponent({
   },
   setup() {
     const table = inject(TABLE_INJECTION_KEY)
-    const columns = table.store.states.initColumns
-    const changeTableColumnAttr = () => {
-      table.store.scheduleLayout(true)
+    const columns = table.store.states.settingColumns
+    const tableColumns = ref()
+
+    nextTick(() => {
+      const tbody = tableColumns.value.$el.querySelectorAll(
+        '.el-table__inner-wrapper .el-table__body-wrapper table > tbody'
+      )[0]
+      new Sortable(tbody, {
+        handle: '.move',
+        animation: 100,
+        ghostClass: 'sortable-ghost',
+        onEnd({ newIndex, oldIndex }) {
+          // 表格列数组排序
+          const tableData = columns.value
+          const currRow = tableData.splice(oldIndex, 1)[0]
+          tableData.splice(newIndex, 0, currRow)
+          table.store.states._columns.value = tableData
+          table.store.updateColumns()
+        },
+      })
+    })
+    const changeTableColumnAttr = (column) => {
+      console.log('changeTableColumnAttr', column)
+      table.store.scheduleLayout(column.columnKey === 'fixed')
     }
     return {
       columns,
+      tableColumns,
       changeTableColumnAttr,
     }
   },
 })
 </script>
 
-<style>
-.crud-opts {
-  padding: 6px 0;
-  display: -webkit-flex;
-  display: flex;
-  align-items: center;
-}
-
-.crud-opts-left {
-  display: flex;
-}
-
-.crud-opts .crud-opts-right {
-  margin-left: auto;
-}
-</style>
+<style></style>

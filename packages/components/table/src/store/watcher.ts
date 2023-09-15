@@ -53,7 +53,10 @@ function useWatcher<T>() {
   const _data: Ref<T[]> = ref([])
   const isComplex = ref(false)
   const _columns: Ref<TableColumnCtx<T>[]> = ref([])
+  // 初始化表格列数组
   const initColumns: Ref<TableColumnCtx<T>[]> = ref([])
+  // 手动调整展示的表格列数组
+  const settingColumns: Ref<TableColumnCtx<T>[]> = ref([])
   const originColumns: Ref<TableColumnCtx<T>[]> = ref([])
   const columns: Ref<TableColumnCtx<T>[]> = ref([])
   const fixedColumns: Ref<TableColumnCtx<T>[]> = ref([])
@@ -133,24 +136,6 @@ function useWatcher<T>() {
       .concat(fixedColumns.value)
       .concat(notFixedColumns)
       .concat(rightFixedColumns.value)
-
-    // 存储一份表格最初进来时的所有列，及其列的顺序
-    if (initColumns.value.length === 0) {
-      initColumns.value = originColumns.value
-    } else {
-      initColumns.value = initColumns.value.map((initColumn) => {
-        const originColumn = originColumns.value.find(
-          (originColumn) => originColumn.property === initColumn.property
-        )
-        if (!originColumn) {
-          initColumn.hidden = true
-          return initColumn
-        }
-
-        initColumn = originColumn
-        return initColumn
-      })
-    }
 
     const leafColumns = doFlattenColumns(notFixedColumns)
     const fixedLeafColumns = doFlattenColumns(fixedColumns.value)
@@ -545,6 +530,7 @@ function useWatcher<T>() {
       isComplex,
       _columns,
       initColumns,
+      settingColumns,
       originColumns,
       columns,
       fixedColumns,

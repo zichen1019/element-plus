@@ -90,6 +90,8 @@ function useStore<T>() {
       }
       sortColumn(newColumns)
       states._columns.value = newColumns
+      states.initColumns.value = newColumns
+      states.settingColumns.value = newColumns
       states.updateOrderFns.push(updateColumnOrder)
       if (column.type === 'selection') {
         states.selectable.value = column.selectable

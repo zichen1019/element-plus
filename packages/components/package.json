@@ -9,6 +9,12 @@
   "peerDependencies": {
     "vue": "^3.2.0"
   },
+  "dependencies": {
+    "sortablejs": "^1.15.0"
+  },
+  "devDependencies": {
+    "@types/sortablejs": "^1.15.2"
+  },
   "types": "index.d.ts",
   "sideEffects": false,
   "gitHead": "c69724230befa8fede0e6b9c37fb0b7e39fd7cdd"

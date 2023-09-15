@@ -15,7 +15,7 @@
       <el-popover
         :visible="tableColumnsPopoverVisible"
         placement="bottom-end"
-        width="600"
+        width="610"
       >
         <template #reference>
           <el-button
