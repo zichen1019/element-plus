@@ -2,7 +2,6 @@
   <el-table-normal
     ref="tableColumns"
     :data="columns"
-    row-key="id"
     max-height="500"
     size="small"
     border
@@ -14,12 +13,12 @@
         <el-icon-d-caret style="width: 1em; height: 1em" />
       </el-tag>
     </el-table-column>
-    <el-table-column prop="hidden" label="隐藏" width="65">
+    <el-table-column prop="hidden" label="显示" width="65">
       <template #default="{ row }">
         <el-switch
           v-model="row.hidden"
-          :active-value="true"
-          :inactive-value="false"
+          :active-value="false"
+          :inactive-value="true"
           @change="changeTableColumnAttr"
         />
       </template>
@@ -37,7 +36,11 @@
     </el-table-column>
     <el-table-column prop="sortable" label="排序" width="65">
       <template #default="{ row }">
-        <el-switch v-model="row.sortable" />
+        <el-switch
+          v-if="row.type !== 'selection' && row.type !== 'index'"
+          v-model="row.sortable"
+        />
+        <span v-else />
       </template>
     </el-table-column>
     <el-table-column prop="fixed" label="固定" min-width="160">
@@ -103,17 +106,15 @@ export default defineComponent({
         ghostClass: 'sortable-ghost',
         onEnd({ newIndex, oldIndex }) {
           // 表格列数组排序
-          const tableData = columns.value
-          const currRow = tableData.splice(oldIndex, 1)[0]
-          tableData.splice(newIndex, 0, currRow)
-          table.store.states._columns.value = tableData
+          const currRow = columns.value.splice(oldIndex, 1)[0]
+          columns.value.splice(newIndex, 0, currRow)
+          table.store.states._columns.value = columns.value
           table.store.updateColumns()
         },
       })
     })
     const changeTableColumnAttr = (column) => {
-      console.log('changeTableColumnAttr', column)
-      table.store.scheduleLayout(column.columnKey === 'fixed')
+      table.store.scheduleLayout(true, true)
     }
     return {
       columns,
