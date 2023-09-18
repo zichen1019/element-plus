@@ -146,6 +146,7 @@ interface TableProps<T> {
   scrollbarAlwaysOn?: boolean
   flexible?: boolean
   showOverflowTooltip?: boolean | TableOverflowTooltipOptions
+  rowClickSelection: boolean
 }
 
 interface Sort {
@@ -276,6 +277,10 @@ export default {
   showOverflowTooltip: [Boolean, Object] as PropType<
     TableProps<DefaultRow>['showOverflowTooltip']
   >,
+  rowClickSelection: {
+    type: Boolean,
+    default: true,
+  },
 }
 export type {
   SummaryMethod,

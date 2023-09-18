@@ -32,6 +32,9 @@ function useEvents<T>(props: Partial<TableBodyProps<T>>) {
       }
     }
     table?.emit(`row-${name}`, row, column, event)
+    if (parent.ctx.rowClickSelection && name === 'click') {
+      props.store.toggleRowSelection(row)
+    }
   }
   const handleDoubleClick = (event: Event, row: T) => {
     handleEvent(event, row, 'dblclick')
