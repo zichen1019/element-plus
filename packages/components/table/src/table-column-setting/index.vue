@@ -30,7 +30,7 @@
           v-model="row.width"
           placeholder="auto"
           size="small"
-          @change="changeTableColumnAttr(row)"
+          @change="changeTableColumnAttr"
         />
       </template>
     </el-table-column>
@@ -113,7 +113,7 @@ export default defineComponent({
         },
       })
     })
-    const changeTableColumnAttr = (column) => {
+    const changeTableColumnAttr = () => {
       table.store.scheduleLayout(true, true)
     }
     return {
