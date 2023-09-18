@@ -195,7 +195,10 @@ export default {
   },
   stripe: Boolean,
   border: Boolean,
-  rowKey: [String, Function] as PropType<TableProps<DefaultRow>['rowKey']>,
+  rowKey: {
+    type: [String, Function] as PropType<TableProps<DefaultRow>['rowKey']>,
+    default: 'id',
+  },
   showHeader: {
     type: Boolean,
     default: true,
