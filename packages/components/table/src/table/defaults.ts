@@ -89,6 +89,14 @@ type CellStyle<T> =
       columnIndex: number
     }) => CSSProperties)
 type Layout = 'fixed' | 'auto'
+
+type MergeColumn<T> = {
+  // 要合并的列
+  property: string
+  // 根据返回值判断是否进行合并
+  getValue: (row: T) => object
+}
+
 interface TableProps<T> {
   data: T[]
   size?: ComponentSize
@@ -147,6 +155,8 @@ interface TableProps<T> {
   flexible?: boolean
   showOverflowTooltip?: boolean | TableOverflowTooltipOptions
   rowClickSelection: boolean
+  mergeCols: MergeColumn<T>[]
+  mergeRows: MergeColumn<T>[]
 }
 
 interface Sort {
@@ -281,6 +291,8 @@ export default {
     type: Boolean,
     default: true,
   },
+  mergeCols: Array as PropType<TableColumnCtx<DefaultRow>['mergeCols']>,
+  mergeRows: Array as PropType<TableColumnCtx<DefaultRow>['mergeRows']>,
 }
 export type {
   SummaryMethod,

@@ -47,7 +47,8 @@ function useRender<T>(props: Partial<TableBodyProps<T>>) {
     row: T,
     $index: number,
     treeRowData?: TreeNode,
-    expanded = false
+    expanded = false,
+    spans: []
   ) => {
     const { tooltipEffect, tooltipOptions, store } = props
     const { indent, columns } = store.states
@@ -75,7 +76,13 @@ function useRender<T>(props: Partial<TableBodyProps<T>>) {
         onMouseleave: handleMouseLeave,
       },
       columns.value.map((column, cellIndex) => {
-        const { rowspan, colspan } = getSpan(row, column, $index, cellIndex)
+        const { rowspan, colspan } = getSpan(
+          row,
+          column,
+          $index,
+          cellIndex,
+          spans
+        )
         if (!rowspan || !colspan) {
           return null
         }
@@ -143,7 +150,7 @@ function useRender<T>(props: Partial<TableBodyProps<T>>) {
     return column.renderCell(data)
   }
 
-  const wrappedRowRender = (row: T, $index: number) => {
+  const wrappedRowRender = (row: T, $index: number, spans: []) => {
     const store = props.store
     const { isRowExpanded, assertRowKey } = store
     const { treeData, lazyTreeNodeMap, childrenColumnName, rowKey } =
@@ -263,7 +270,7 @@ function useRender<T>(props: Partial<TableBodyProps<T>>) {
       }
       return tmp
     } else {
-      return rowRender(row, $index, undefined)
+      return rowRender(row, $index, undefined, false, spans)
     }
   }
 
