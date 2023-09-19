@@ -18,28 +18,6 @@ import defaultProps from './defaults'
 import type { VNode } from 'vue'
 
 /**
- * 深拷贝
- * @param o
- */
-const deepCopy = (o) => {
-  if (Array.isArray(o)) {
-    const n = []
-    for (const [i, element] of o.entries()) {
-      n[i] = deepCopy(element)
-    }
-    return n
-  } else if (o instanceof Object) {
-    const nn = {}
-    for (const j in o) {
-      nn[j] = deepCopy(o[j])
-    }
-    return nn
-  } else {
-    return o
-  }
-}
-
-/**
  * 合并行与列
  * @param data  需要合并的table
  * @param cols  行与行之间合并的字段
@@ -47,79 +25,108 @@ const deepCopy = (o) => {
  */
 const buildSpans = (data, cols, rows) => {
   const spans = []
-  const localCols = cols?.map((col) => {
+  const spans2 = new Map()
+  const defaultGetValue = (property) => {
+    return (row) => row[property]
+  }
+  const mergeCols = cols?.map((col) => {
     return {
-      rowSpan: 1,
-      colSpan: 1,
-      rowIndex: null,
-      colIndex: null,
-      colProperty: col.property,
-      order: 0, // 行序号
-      value: null,
-      getValue: col.getValue,
-    }
-  }) // 行间合并
-  const localRows = rows?.map((row) => {
-    return {
-      rowSpan: 1,
-      colSpan: 1,
-      rowIndex: null,
-      colIndex: null,
-      colProperty: row.property,
-      value: null,
-      getValue: row.getValue,
+      rowspan: 1,
+      rowIndex: 0,
+      property: col.property,
+      getValue: col.getValue || defaultGetValue(col.property),
     }
   })
+  // 行间合并
+  const mergeRows = rows?.map((row) => {
+    return {
+      colspan: 1,
+      rowIndex: 0,
+      property: row.property,
+      getValue: row.getValue || defaultGetValue(row.property),
+      // 关联的根行的索引值, 从0开始
+      rootRowIndex: -1,
+    }
+  })
+  console.log('mergeRows', mergeRows)
   for (const [i, row] of data.entries()) {
     spans[i] = {
-      mergeRowsSpans: [],
-      mergeColsSpans: [],
+      rowSpans: [],
+      colSpans: [],
     }
     // 行间合并
-    for (const j in localRows) {
-      const localRow = localRows[j]
-      if (i === 0 || localRow.value !== localRow.getValue(row)) {
-        // 边界指针，1.第一条硬性第一个边界 2.与上一单元格值不同的属于边界
-        localRow.rowIndex = i // 行索引，若下一单元格值相同则以此索引叠加rowSpan值
-        localRow.rowSpan = 1 // rowSpan默认1
-        localRow.value = localRow.getValue(row) // 单元格值
-        localRow.order += 1 // 行号+1
-      } else {
-        // 若本单元格值==上一单元格值则合并列，rowSpan+=1
-        for (const span of spans[localRow.rowIndex].mergeRowsSpans) {
-          if (span.colProperty === localRow.colProperty) {
-            span.rowSpan += 1
-          } else {
-            break
-          }
-        }
+    for (const [j, column] of mergeRows.entries()) {
+      if (i === 3 && j === 0) {
+        console.log(column)
       }
+      const rowValue = column.getValue(row)
+
+      // 当前单元格合并数据
+      const span = Object.assign({}, column)
+      span.rowIndex = i
+      span.rowspan = 1
+
+      // 如果是第一行或者当前值与上一行当前列的值不同时，合并行数默认为1
+      if (i === 0 || rowValue !== span.getValue(data[i - 1])) {
+        spans[i].rowSpans.push(span)
+        spans2.set(i + span.property, span)
+        continue
+      }
+
+      // 如果当前值与上一行的值相同时，合并行数默认为0
+      span.rowspan = 0
+      // 获取上一行当前列的合并行数
+      const preRowspan = spans[i - 1].rowSpans[j]
+      // 当前行关联的根行的索引值为：如果上一行是被合并的单元格，则取上一行当前列的关联的根行的索引值；否则取上一行索引值
+      if (i === 5 && j === 0) {
+        console.log(spans[0].rowSpans[0].rowspan, preRowspan, i - 1)
+      }
+      span.rootRowIndex =
+        preRowspan.rowspan === 0 ? preRowspan.rootRowIndex : i - 1
+      // 根据关联的根行的索引值更新对应的行合并数
+      // spans[span.rootRowIndex].rowSpans[j].rowspan += 1
+      spans2.get(span.rootRowIndex + span.property).rowspan += 1
+
+      spans[i].rowSpans.push(span)
+      spans2.set(i + span.property, span)
     }
-    spans[i].mergeRowsSpans = deepCopy(localRows) // 深度复制，否则总是指向最后一条数据
+
     // 行内合并【列合并】
-    for (let j = 0; j < localCols.length; j++) {
+    for (let j = 0; j < mergeCols.length; j++) {
       // 单元格
-      const column = localCols[j]
+      const column = mergeCols[j]
       // 当前单元格的数据
       const columnValue = column?.getValue(row)
 
       // 当前单元格合并数据
       const span = Object.assign({}, column)
-      span.rowSpan = 1 // rowSpan默认1
-      span.colSpan = 1
-      span.rowIndex = i // 行索引，若下一单元格值相同则以此索引叠加rowSpan值
-      spans[i].mergeColsSpans.push(span)
+      span.rowIndex = i
+      span.colspan = 1
+      spans[i].colSpans.push(span)
+
+      const key = i + span.property
+      const oldSpan = spans2.get(key)
+      if (oldSpan) {
+        oldSpan.colspan = 1
+      } else {
+        spans2.set(key, span)
+      }
+
       j = updateSpanAndGetNextColumnIndex(
         row,
         spans,
         i,
-        localCols,
+        mergeCols,
         j,
-        columnValue
+        columnValue,
+        spans2
       )
     }
   }
-  return spans
+
+  console.log(spans)
+
+  return spans2
 }
 
 /**
@@ -127,7 +134,7 @@ const buildSpans = (data, cols, rows) => {
  * @param row
  * @param spans
  * @param rowIndex
- * @param localCols
+ * @param mergeCols
  * @param mergeColsIndex
  * @param columnValue
  */
@@ -135,35 +142,54 @@ const updateSpanAndGetNextColumnIndex = (
   row,
   spans,
   rowIndex,
-  localCols,
+  mergeCols,
   mergeColsIndex,
-  columnValue
+  columnValue,
+  spans2
 ) => {
-  // console.log('----------------------------init nextColumn', i, mergeColsIndex + 1)
+  // 下一个待处理的列的索引
   let nextColumnIndex
-  const localColsLength = localCols.length
-  for (let k = mergeColsIndex + 1; k < localColsLength; k++) {
-    const nextColumn = localCols[k]
-    const nextSpan = Object.assign({}, nextColumn)
-    nextSpan.rowSpan = 0
-    nextSpan.colSpan = 0
-    if (columnValue !== nextColumn.getValue(row)) {
-      spans[rowIndex].mergeColsSpans[mergeColsIndex].colSpan =
-        k - mergeColsIndex
-      nextColumnIndex = k - 1
-      // console.log('nextColumn break 1', i, mergeColsIndex)
+  // 合并列长度
+  const localColsLength = mergeCols.length
+  for (let i = mergeColsIndex + 1; i < localColsLength; i++) {
+    // 获取当前单元格
+    const column = mergeCols[i]
+
+    // 初始化合并数据
+    const span = Object.assign({}, column)
+    span.rowIndex = rowIndex
+    span.colspan = 0
+
+    // 如果指定单元格与当前单元格数据不匹配，则直接返回
+    if (columnValue !== column.getValue(row)) {
+      // 更新指定单元格合并列数
+      spans[rowIndex].colSpans[mergeColsIndex].colspan = i - mergeColsIndex
+      spans2.get(rowIndex + mergeCols[mergeColsIndex].property).colspan =
+        i - mergeColsIndex
+      // 重置下一个待处理的列的索引为上一个列的索引，这样才能重新以当前单元格为开始进行匹配
+      nextColumnIndex = i - 1
       break
     }
-    if (k === localColsLength - 1) {
-      spans[rowIndex].mergeColsSpans[mergeColsIndex].colSpan =
-        k - mergeColsIndex + 1
+
+    // 如果直到最后一个单元格，其值也都一样
+    if (i === localColsLength - 1) {
+      // 更新指定单元格合并列数
+      spans[rowIndex].colSpans[mergeColsIndex].colspan = i - mergeColsIndex + 1
+      spans2.get(rowIndex + mergeCols[mergeColsIndex].property).colspan =
+        i - mergeColsIndex + 1
+      // 重置下一个待处理的列的索引为合并列的最后一个索引值，这样才能结束下一个单元格匹配
       nextColumnIndex = localColsLength - 1
-      // console.log('nextColumn break 2', i, k, mergeColsIndex)
     }
-    nextSpan.rowIndex = rowIndex
-    spans[rowIndex].mergeColsSpans.push(nextSpan)
+    spans[rowIndex].colSpans.push(span)
+
+    const key = rowIndex + span.property
+    const oldSpan = spans2.get(key)
+    if (oldSpan) {
+      oldSpan.colspan = 1
+    } else {
+      spans2.set(key, span)
+    }
   }
-  // console.log('nextColumn over', mergeColsIndex)
   return nextColumnIndex
 }
 

@@ -114,7 +114,7 @@ function useStyles<T>(props: Partial<TableBodyProps<T>>) {
     column: TableColumnCtx<T>,
     rowIndex: number,
     columnIndex: number,
-    spans: []
+    spans
   ) => {
     let rowspan = 1
     let colspan = 1
@@ -137,8 +137,10 @@ function useStyles<T>(props: Partial<TableBodyProps<T>>) {
       }
     } else if (mergeCols || mergeRows) {
       const result = mergeColRows(rowIndex, column.property, spans)
-      rowspan = result.rowspan
-      colspan = result.colspan
+      if (result) {
+        rowspan = result.rowspan
+        colspan = result.colspan
+      }
     }
     return { rowspan, colspan }
   }
@@ -149,37 +151,24 @@ function useStyles<T>(props: Partial<TableBodyProps<T>>) {
    * @param property
    * @param spans
    */
-  const mergeColRows = (rowIndex: number, property: string, spans: []) => {
-    // 遍历本行合并表
-    const span = {
-      rowspan: 1,
-      colspan: 1,
-    }
-    for (const _c of spans[rowIndex].mergeColsSpans) {
-      // 列属性匹配
-      if (_c.colProperty === property) {
-        // 若合并表指向本单元格则构建合并参数并返回
-        if (_c.rowIndex === rowIndex) {
-          span.colspan = _c.colSpan
-        }
-        break
-      }
-    }
-    // 行间合并
-    for (const _r of spans[rowIndex].mergeRowsSpans) {
-      // 列属性匹配
-      if (_r.colProperty === property) {
-        // 若合并表指向本单元格则构建合并参数并返回
-        if (_r.rowIndex === rowIndex) {
-          span.rowspan = _r.rowSpan
-        } else {
-          // 否则隐藏该单元格。这里必须有，否则单元格会被右移一列
-          span.rowspan = 0
-        }
-        break
-      }
-    }
-    return span
+  const mergeColRows = (rowIndex: number, property: string, spans) => {
+    /*// 匹配列合并数
+    const colspan = spans[rowIndex].colSpans.find(
+      (colspan) =>
+        colspan.rowIndex === rowIndex && colspan.property === property
+    )?.colspan
+
+    // 匹配行合并数
+    const rowspan = spans[rowIndex].rowSpans.find(
+      (rowspan) =>
+        rowspan.rowIndex === rowIndex && rowspan.property === property
+    )?.rowspan
+
+    return {
+      rowspan: rowspan !== undefined ? rowspan : 1,
+      colspan: colspan !== undefined ? colspan : 1,
+    }*/
+    return spans.get(rowIndex + property)
   }
 
   const getColspanRealWidth = (
