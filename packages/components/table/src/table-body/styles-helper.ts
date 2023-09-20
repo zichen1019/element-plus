@@ -118,15 +118,20 @@ function useStyles<T>(props: Partial<TableBodyProps<T>>) {
   ) => {
     let rowspan = 1
     let colspan = 1
-    const fn = parent?.props.spanMethod
+    let fn = parent?.props.spanMethod
     const mergeCols = parent?.props.mergeCols
     const mergeRows = parent?.props.mergeRows
+    if (!fn && (mergeCols || mergeRows)) {
+      fn = ({ column, rowIndex, spans }) =>
+        spans.get(rowIndex + column.property)
+    }
     if (typeof fn === 'function') {
       const result = fn({
         row,
         column,
         rowIndex,
         columnIndex,
+        spans,
       })
       if (Array.isArray(result)) {
         rowspan = result[0]
@@ -135,40 +140,8 @@ function useStyles<T>(props: Partial<TableBodyProps<T>>) {
         rowspan = result.rowspan
         colspan = result.colspan
       }
-    } else if (mergeCols || mergeRows) {
-      const result = mergeColRows(rowIndex, column.property, spans)
-      if (result) {
-        rowspan = result.rowspan
-        colspan = result.colspan
-      }
     }
     return { rowspan, colspan }
-  }
-
-  /**
-   * 合并行、合并列
-   * @param rowIndex
-   * @param property
-   * @param spans
-   */
-  const mergeColRows = (rowIndex: number, property: string, spans) => {
-    /*// 匹配列合并数
-    const colspan = spans[rowIndex].colSpans.find(
-      (colspan) =>
-        colspan.rowIndex === rowIndex && colspan.property === property
-    )?.colspan
-
-    // 匹配行合并数
-    const rowspan = spans[rowIndex].rowSpans.find(
-      (rowspan) =>
-        rowspan.rowIndex === rowIndex && rowspan.property === property
-    )?.rowspan
-
-    return {
-      rowspan: rowspan !== undefined ? rowspan : 1,
-      colspan: colspan !== undefined ? colspan : 1,
-    }*/
-    return spans.get(rowIndex + property)
   }
 
   const getColspanRealWidth = (
