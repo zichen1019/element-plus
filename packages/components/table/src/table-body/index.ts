@@ -15,7 +15,7 @@ import { TABLE_INJECTION_KEY } from '../tokens'
 import useRender from './render-helper'
 import defaultProps from './defaults'
 
-import { buildSpans } from './utils-helper'
+import useUtils from './utils-helper'
 import type { VNode } from 'vue'
 
 export default defineComponent({
@@ -71,7 +71,7 @@ export default defineComponent({
     const mergeCols = parent?.props.mergeCols
     const mergeRows = parent?.props.mergeRows
     if (mergeCols || mergeRows) {
-      spans = buildSpans(data, mergeCols, mergeRows)
+      spans = useUtils().buildSpans()
     }
 
     // Why do we need tabIndex: -1 ?
