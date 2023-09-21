@@ -32,6 +32,21 @@
         </template>
       </el-table-column>
     </el-table>
+    <el-table ref="table2" :data="list" border fit>
+      <el-table-column type="selection" label="选择" />
+      <el-table-column type="index" label="序号" :width="100" />
+      <el-table-column prop="a" label="a" :width="100" />
+      <el-table-column prop="b" label="b" hidden />
+      <el-table-column prop="c" label="c" />
+      <el-table-column prop="d" label="d" />
+      <el-table-column prop="e" label="e" />
+      <el-table-column prop="f" label="f" />
+      <el-table-column label="操作" fixed="right">
+        <template #default="{ row }">
+          <el-button type="primary" @click="edit(row)">编辑</el-button>
+        </template>
+      </el-table-column>
+    </el-table>
   </div>
 </template>
 

@@ -9,7 +9,10 @@
     highlight-current-row
   >
     <el-table-column width="60">
-      <el-tag class="move" style="cursor: move">
+      <template #header>
+        <el-icon-d-caret style="width: 1em; height: 1em" />
+      </template>
+      <el-tag :class="'move ' + (hasMergeCols && 'is-disabled')">
         <el-icon-d-caret style="width: 1em; height: 1em" />
       </el-tag>
     </el-table-column>
@@ -19,6 +22,7 @@
           v-model="row.hidden"
           :active-value="false"
           :inactive-value="true"
+          :disabled="hasMergeCols"
           @change="changeTableColumnAttr"
         />
       </template>
@@ -34,7 +38,7 @@
         />
       </template>
     </el-table-column>
-    <el-table-column prop="sortable" label="排序" width="65">
+    <!--<el-table-column prop="sortable" label="排序" width="65">
       <template #default="{ row }">
         <el-switch
           v-if="row.type !== 'selection' && row.type !== 'index'"
@@ -42,7 +46,7 @@
         />
         <span v-else />
       </template>
-    </el-table-column>
+    </el-table-column>-->
     <el-table-column prop="fixed" label="固定" min-width="160">
       <template #default="{ row }">
         <el-radio-group
@@ -61,7 +65,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, inject, nextTick, ref } from 'vue'
+import { computed, defineComponent, inject, nextTick, ref } from 'vue'
 import { Sortable } from 'sortablejs'
 import { DCaret as ElIconDCaret } from '@element-plus/icons-vue'
 import ElInputNumber from '../../../input-number'
@@ -102,6 +106,7 @@ export default defineComponent({
       )[0]
       new Sortable(tbody, {
         handle: '.move',
+        filter: '.is-disabled',
         animation: 100,
         ghostClass: 'sortable-ghost',
         onEnd({ newIndex, oldIndex }) {
@@ -120,9 +125,17 @@ export default defineComponent({
       columns,
       tableColumns,
       changeTableColumnAttr,
+      hasMergeCols: computed(() => !!table.props.mergeCols),
     }
   },
 })
 </script>
 
-<style></style>
+<style lang="scss" scoped>
+.move {
+  cursor: move;
+}
+.is-disabled {
+  opacity: 0.6;
+}
+</style>
