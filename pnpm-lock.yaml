@@ -215,7 +215,7 @@ importers:
         version: registry.npmmirror.com/unplugin-element-plus@0.4.1
       unplugin-vue-macros:
         specifier: ^0.11.2
-        version: registry.npmmirror.com/unplugin-vue-macros@0.11.2(esbuild@0.14.54)(rollup@2.79.1)(vue@3.3.4)
+        version: registry.npmmirror.com/unplugin-vue-macros@0.11.2(rollup@2.79.1)(vite@2.9.16)(vue@3.3.4)
       vitest:
         specifier: 0.12.6
         version: registry.npmmirror.com/vitest@0.12.6(@vitest/ui@0.16.0)(c8@7.14.0)(jsdom@16.4.0)(sass@1.66.1)
@@ -254,7 +254,7 @@ importers:
         version: registry.npmmirror.com/clipboard-copy@4.0.1
       element-plus:
         specifier: npm:element-plus@latest
-        version: registry.npmmirror.com/element-plus@2.3.12(vue@3.3.4)
+        version: registry.npmmirror.com/element-plus@2.3.14(vue@3.3.4)
       markdown-it:
         specifier: ^13.0.1
         version: registry.npmmirror.com/markdown-it@13.0.1
@@ -272,7 +272,7 @@ importers:
         version: registry.npmmirror.com/vue@3.3.4
     devDependencies:
       '@crowdin/cli':
-        specifier: ^3.7.8
+        specifier: ^3.7.10
         version: registry.npmmirror.com/@crowdin/cli@3.13.0
       '@docsearch/react':
         specifier: ^3.1.0
@@ -8443,11 +8443,11 @@ packages:
     name: electron-to-chromium
     version: 1.4.508
 
-  registry.npmmirror.com/element-plus@2.3.12(vue@3.3.4):
-    resolution: {integrity: sha512-fAWpbKCyt+l1dsqSNPOs/F/dBN4Wp5CGAyxbiS5zqDwI4q3QPM+LxLU2h3GUHMIBtMGCvmsG98j5HPMkTKkvcA==, registry: https://packages.aliyun.com/623e9f4b581fc62661c91d7d/npm/npm-registry/, tarball: https://registry.npmmirror.com/element-plus/-/element-plus-2.3.12.tgz}
-    id: registry.npmmirror.com/element-plus/2.3.12
+  registry.npmmirror.com/element-plus@2.3.14(vue@3.3.4):
+    resolution: {integrity: sha512-9yvxUaU4jXf2ZNPdmIxoj/f8BG8CDcGM6oHa9JIqxLjQlfY4bpzR1E5CjNimnOX3rxO93w1TQ0jTVt0RSxh9kA==, registry: https://packages.aliyun.com/623e9f4b581fc62661c91d7d/npm/npm-registry/, tarball: https://registry.npmmirror.com/element-plus/-/element-plus-2.3.14.tgz}
+    id: registry.npmmirror.com/element-plus/2.3.14
     name: element-plus
-    version: 2.3.12
+    version: 2.3.14
     peerDependencies:
       vue: ^3.2.0
     dependencies:
@@ -16390,6 +16390,7 @@ packages:
       esbuild: registry.npmmirror.com/esbuild@0.14.54
       rollup: registry.npmmirror.com/rollup@2.79.1
       unplugin: registry.npmmirror.com/unplugin@0.10.2
+    dev: false
 
   registry.npmmirror.com/unplugin-combine@0.2.8(rollup@2.79.1)(vite@2.9.16):
     resolution: {integrity: sha512-Z38AC/TEjXbVyZ5HjVqo+lADj0/dcfwWC0Z4y0LNhybJzJQwmcMxm+ZsqHY3faauj4YigmlRMdptR5JEW9RuLg==, registry: https://packages.aliyun.com/623e9f4b581fc62661c91d7d/npm/npm-registry/, tarball: https://registry.npmmirror.com/unplugin-combine/-/unplugin-combine-0.2.8.tgz}
@@ -16565,6 +16566,7 @@ packages:
       - rollup
       - vite
       - webpack
+    dev: false
 
   registry.npmmirror.com/unplugin-vue-macros@0.11.2(rollup@2.79.1)(vite@2.9.16)(vue@3.3.4):
     resolution: {integrity: sha512-DvEFbqyio24pOzSyvzDiCaPXnOwJEd9u1Dr2cshMcnSft6OWBgwbm6IumVBbOSydEpClORcZAouxA9CyjUyMbQ==, registry: https://packages.aliyun.com/623e9f4b581fc62661c91d7d/npm/npm-registry/, tarball: https://registry.npmmirror.com/unplugin-vue-macros/-/unplugin-vue-macros-0.11.2.tgz}
