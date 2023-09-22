@@ -66,7 +66,7 @@
 
 <script lang="ts">
 import { computed, defineComponent, inject, nextTick, ref } from 'vue'
-import { Sortable } from 'sortablejs'
+import Sortable from 'sortablejs'
 import { DCaret as ElIconDCaret } from '@element-plus/icons-vue'
 import ElInputNumber from '../../../input-number'
 import ElSwitch from '../../../switch'
@@ -97,7 +97,7 @@ export default defineComponent({
   },
   setup() {
     const table = inject(TABLE_INJECTION_KEY)
-    const columns = table.store.states.settingColumns
+    const columns = table?.store.states.settingColumns
     const tableColumns = ref()
 
     nextTick(() => {
@@ -113,19 +113,19 @@ export default defineComponent({
           // 表格列数组排序
           const currRow = columns.value.splice(oldIndex, 1)[0]
           columns.value.splice(newIndex, 0, currRow)
-          table.store.states._columns.value = columns.value
-          table.store.updateColumns()
+          if (table) table.store.states._columns.value = columns.value
+          table?.store.updateColumns()
         },
       })
     })
     const changeTableColumnAttr = () => {
-      table.store.scheduleLayout(true, true)
+      table?.store.scheduleLayout(true, true)
     }
     return {
       columns,
       tableColumns,
       changeTableColumnAttr,
-      hasMergeCols: computed(() => !!table.props.mergeCols),
+      hasMergeCols: computed(() => !!table?.props.mergeCols),
     }
   },
 })

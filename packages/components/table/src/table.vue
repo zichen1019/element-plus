@@ -26,6 +26,7 @@
     :data-prefix="ns.namespace.value"
     @mouseleave="handleMouseLeave"
   >
+    <el-crud />
     <table-operation />
     <div :class="ns.e('inner-wrapper')" :style="tableInnerStyle">
       <div ref="hiddenColumns" class="hidden-columns">
@@ -151,6 +152,7 @@ import { debounce } from 'lodash-unified'
 import { Mousewheel } from '@element-plus/directives'
 import { useLocale, useNamespace } from '@element-plus/hooks'
 import ElScrollbar from '@element-plus/components/scrollbar'
+import ElCrud from '../../crud'
 import { createStore } from './store/helper'
 import TableLayout from './table-layout'
 import TableHeader from './table-header'
@@ -180,6 +182,7 @@ export default defineComponent({
     TableFooter,
     ElScrollbar,
     hColgroup,
+    ElCrud,
   },
   props: defaultProps,
   emits: [

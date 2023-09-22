@@ -32,6 +32,7 @@ import {
   ElHeader,
   ElMain,
 } from '@element-plus/components/container'
+import { ElCrud } from '@element-plus/components/crud'
 import { ElDatePicker } from '@element-plus/components/date-picker'
 import {
   ElDescriptions,
@@ -134,6 +135,7 @@ export default [
   ElColorPicker,
   ElConfigProvider,
   ElContainer,
+  ElCrud,
   ElAside,
   ElFooter,
   ElHeader,
