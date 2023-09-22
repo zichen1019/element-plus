@@ -209,6 +209,16 @@ table/rowspan-and-colspan
 
 :::
 
+## 合并行列
+
+Configuring rowspan and colspan allows you to merge cells
+
+:::demo
+
+table/merge-rows-cols
+
+:::
+
 ## Custom index
 
 You can customize row index in `type=index` columns.
