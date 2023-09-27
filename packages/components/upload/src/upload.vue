@@ -46,7 +46,7 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, onBeforeUnmount, provide, shallowRef, toRef } from 'vue'
+import { computed, onBeforeUnmount, provide, shallowRef } from 'vue'
 import { useFormDisabled } from '@element-plus/components/form'
 import { uploadContextKey } from './constants'
 import UploadList from './upload-list.vue'
@@ -97,8 +97,10 @@ onBeforeUnmount(() => {
   uploadFiles.value.forEach(revokeFileObjectURL)
 })
 
+const accept = computed(() => props.accept)
+
 provide(uploadContextKey, {
-  accept: toRef(props, 'accept'),
+  accept,
 })
 
 defineExpose({

@@ -1,10 +1,11 @@
 import { inject, onBeforeUnmount, onMounted, provide, ref, unref } from 'vue'
 import Collection from './collection.vue'
-import CollectionItem from './collection-item.vue'
+import CollectionItemInstance from './collection-item.vue'
 
 import type { InjectionKey } from 'vue'
 import type { SetupContext } from '@vue/runtime-core'
 import type {
+  CollectionItem,
   ElCollectionInjectionContext,
   ElCollectionItemInjectionContext,
 } from './tokens'
@@ -26,7 +27,7 @@ export const createCollectionWithScope = (name: string) => {
     setup() {
       const collectionRef = ref<HTMLElement | null>(null)
       const itemMap: ElCollectionInjectionContext['itemMap'] = new Map()
-      const getItems = () => {
+      const getItems = <T>() => {
         const collectionEl = unref(collectionRef)
 
         if (!collectionEl) return []
@@ -38,7 +39,7 @@ export const createCollectionWithScope = (name: string) => {
 
         return items.sort(
           (a, b) => orderedNodes.indexOf(a.ref!) - orderedNodes.indexOf(b.ref!)
-        )
+        ) as CollectionItem<T>[]
       }
 
       provide(COLLECTION_INJECTION_KEY, {
@@ -50,7 +51,7 @@ export const createCollectionWithScope = (name: string) => {
   }
 
   const ElCollectionItem = {
-    ...CollectionItem,
+    ...CollectionItemInstance,
     name: COLLECTION_ITEM_NAME,
     setup(_: unknown, { attrs }: SetupContext) {
       const collectionItemRef = ref<HTMLElement | null>(null)

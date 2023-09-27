@@ -93,20 +93,25 @@ export const provideGlobalConfig = (
     if (!oldConfig?.value) return cfg
     return mergeConfig(oldConfig.value, cfg)
   })
+  // @ts-ignore
   provideFn(configProviderContextKey, context)
+  // @ts-ignore
   provideFn(
     localeContextKey,
     computed(() => context.value.locale)
   )
+  // @ts-ignore
   provideFn(
     namespaceContextKey,
     computed(() => context.value.namespace)
   )
+  // @ts-ignore
   provideFn(
     zIndexContextKey,
     computed(() => context.value.zIndex)
   )
 
+  // @ts-ignore
   provideFn(SIZE_INJECTION_KEY, {
     size: computed(() => context.value.size || ''),
   })

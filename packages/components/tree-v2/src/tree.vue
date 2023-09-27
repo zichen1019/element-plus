@@ -67,6 +67,8 @@ provide(ROOT_TREE_INJECTION_KEY, {
   props,
   instance: getCurrentInstance()!,
 })
+
+// @ts-ignore
 provide(formItemContextKey, undefined)
 const { t } = useLocale()
 const ns = useNamespace('tree')
