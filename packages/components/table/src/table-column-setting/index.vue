@@ -75,13 +75,6 @@ import ElTag from '../../../tag'
 import ElTableColumn from '../tableColumn'
 import ElTableNormal from '../table-normal.vue'
 import { TABLE_INJECTION_KEY } from '../tokens'
-import '@element-plus/components/base/style'
-import '@element-plus/theme-chalk/src/table.scss'
-import '@element-plus/components/switch/style'
-import '@element-plus/components/input-number/style'
-import '@element-plus/components/radio/style'
-import '@element-plus/components/radio-button/style'
-import '@element-plus/components/radio-group/style'
 
 export default defineComponent({
   name: 'ElTableColumnSetting',
@@ -130,12 +123,3 @@ export default defineComponent({
   },
 })
 </script>
-
-<style lang="scss" scoped>
-.move {
-  cursor: move;
-}
-.is-disabled {
-  opacity: 0.6;
-}
-</style>

@@ -2,9 +2,11 @@ import { withInstall, withNoopInstall } from '@element-plus/utils'
 import Table from './src/table.vue'
 import TableColumn from './src/tableColumn'
 import TableNormal from './src/table-normal.vue'
+import TableColumnSetting from './src/table-column-setting/index.vue'
 
 export const ElTable = withInstall(Table, {
   TableColumn,
+  TableColumnSetting,
 })
 
 export const ElTableNormal = withInstall(TableNormal, {

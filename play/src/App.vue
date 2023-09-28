@@ -9,8 +9,8 @@
       </el-icon>
       <el-button type="primary" @click="handleClick">test</el-button>
     </div>
-    <el-crud />
-    <!--<el-table
+    <!--    <el-crud />-->
+    <el-table
       ref="table"
       :data="list"
       border
@@ -47,7 +47,7 @@
           <el-button type="primary" @click="edit(row)">编辑</el-button>
         </template>
       </el-table-column>
-    </el-table>-->
+    </el-table>
   </div>
 </template>
 

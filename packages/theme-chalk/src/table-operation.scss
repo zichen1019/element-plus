@@ -1,0 +1,27 @@
+@use 'sass:map';
+
+@use 'mixins/mixins' as *;
+
+@include b(table-operation) {
+  @include e(crud-opts) {
+    padding: 6px 0;
+    display: -webkit-flex;
+    display: flex;
+    align-items: center;
+
+    @include e(crud-opts-left) {
+      display: flex;
+    }
+
+    @include e(crud-opts-right) {
+      margin-left: auto;
+
+      .move {
+        cursor: move;
+      }
+      .is-disabled {
+        opacity: 0.6;
+      }
+    }
+  }
+}
